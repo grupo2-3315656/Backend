@@ -1,17 +1,51 @@
+import crypto from "crypto";
+import { db } from "../utils/db.js";
+
 export const userModel = {
     get: async () => {
-        return { messaje: "Obtener todos los usuarios" };
+        await db.read();
+        return db.data.users;
     },
+
     getById: async (id) => {
-        return { messaje: "Obtener un solo usuario" };
+        await db.read();
+        return db.data.users.find((u) => u.id === id) || null;
     },
-    create: async () => {
-        return { messaje: "Crear un usuario" };
+
+    create: async (data) => {
+        await db.read();
+        const newUser = {
+            id: crypto.randomUUID(),
+            name: data.name,
+            email: data.email,
+            date: new Date().toISOString(),
+        };
+        db.data.users.push(newUser);
+        await db.write();
+        return newUser;
     },
-    update: async (id) => {
-        return { messaje: "Actualizar un usuario" };
+
+    update: async (id, data) => {
+        await db.read();
+        const index = db.data.users.findIndex((u) => u.id === id);
+        if (index === -1) return null;
+
+        db.data.users[index] = {
+            ...db.data.users[index],
+            ...data,
+            id,
+        };
+        await db.write();
+        return db.data.users[index];
     },
+
     delete: async (id) => {
-        return { messaje: "Eliminar un usuario" };
+        await db.read();
+        const index = db.data.users.findIndex((u) => u.id === id);
+        if (index === -1) return null;
+
+        const deleted = db.data.users.splice(index, 1)[0];
+        await db.write();
+        return deleted;
     },
 };
