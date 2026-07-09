@@ -1,0 +1,27 @@
+{
+    "name": "backend",
+    "version": "1.0.0",
+    "description": "",
+    "main": "index.js",
+    "scripts": {
+        "test": "echo \"Error: no test specified\" && exit 1",
+        "dev": "npx nodemon app.js"
+    },
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/grupo2-3315656/Backend.git"
+    },
+    "keywords": [],
+    "author": "",
+    "license": "ISC",
+    "type": "module",
+    "bugs": {
+        "url": "https://github.com/grupo2-3315656/Backend/issues"
+    },
+    "homepage": "https://github.com/grupo2-3315656/Backend#readme",
+    "devDependencies": {
+        "cors": "^2.8.6",
+        "express": "^5.2.1",
+        "nodemon": "^3.1.14"
+    }
+}
