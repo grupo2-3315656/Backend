@@ -2,6 +2,7 @@ import express from "express";
 import cors from "cors";
 import { router } from "./src/routes/taskRoutes.js";
 import { router as userRouter } from "./src/routes/userRoutes.js";
+import { errorMiddelware, errorNotFoundHandler } from "./src/utils/errorHandler.js";
 
 const port = 3000;
 const host = "0.0.0.0";
@@ -14,6 +15,9 @@ app.use(express.json());
 
 app.use("/api", router);
 app.use("/api", userRouter);
+
+app.use(errorNotFoundHandler);
+app.use(errorMiddelware);
 
 app.listen(port, host, () => {
     console.log(`Server running at http://${host}:${port}`);
