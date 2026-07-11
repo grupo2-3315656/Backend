@@ -2,6 +2,7 @@ import express from "express";
 import cors from "cors";
 import { router } from "./src/routes/taskRoutes.js";
 import { router as userRouter } from "./src/routes/userRoutes.js";
+import { router as assignmentRouter } from "./src/routes/assignmentRoutes.js";
 import { errorMiddelware, errorNotFoundHandler } from "./src/utils/errorHandler.js";
 
 const port = 3000;
@@ -15,6 +16,7 @@ app.use(express.json());
 
 app.use("/api", router);
 app.use("/api", userRouter);
+app.use("/api", assignmentRouter);
 
 app.use(errorNotFoundHandler);
 app.use(errorMiddelware);
