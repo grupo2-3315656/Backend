@@ -7,7 +7,7 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const file = path.join(__dirname, "../../data/db.json");
 
 const adapter = new JSONFile(file);
-const db = new Low(adapter, { users: [], tasks: [] });
+const db = new Low(adapter, { users: [], tasks: [], assignments: [] });
 
 await db.read();
 
