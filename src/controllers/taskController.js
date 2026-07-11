@@ -26,14 +26,13 @@ export const taskController = {
 
     create: async (req, res) => {
         try {
-            const { userId, title, description, status } = req.body;
-            if (!userId || !title || !description || !status) {
+            const { title, description, status } = req.body;
+            if (!title || !description || !status) {
                 return res.status(400).json({
-                    error: "Faltan campos requeridos: userId, title, description, status",
+                    error: "Faltan campos requeridos: title, description, status",
                 });
             }
             const task = await taskModel.create({
-                userId,
                 title,
                 description,
                 status,
@@ -47,17 +46,17 @@ export const taskController = {
     update: async (req, res) => {
         try {
             const { id } = req.params;
-            const { userId, title, description, status } = req.body;
-            if (!userId && !title && !description && !status) {
+            const { title, description, status } = req.body;
+            if (!title && !description && !status) {
                 return res.status(400).json({
-                    error: "Se requiere al menos un campo para actualizar: userId, title, description, status",
+                    error: "Se requiere al menos un campo para actualizar: title, description, status",
                 });
             }
             const existing = await taskModel.getById(id);
             if (!existing) {
                 return res.status(404).json({ error: "Tarea no encontrada" });
             }
-            const updated = await taskModel.update(id, { userId, title, description, status });
+            const updated = await taskModel.update(id, { title, description, status });
             res.json(updated);
         } catch (error) {
             errorHandler(error, res);

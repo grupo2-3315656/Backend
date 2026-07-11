@@ -16,7 +16,6 @@ export const taskModel = {
         await db.read();
         const newTask = {
             id: crypto.randomUUID(),
-            userId: data.userId,
             title: data.title,
             description: data.description,
             status: data.status,
