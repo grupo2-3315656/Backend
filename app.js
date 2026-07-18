@@ -10,7 +10,7 @@ const host = "0.0.0.0";
 
 const app = express();
 
-app.use(cors({ headers: { "Access-Control-Allow-Origin": "*" } }));
+app.use(cors());
 
 app.use(express.json());
 
