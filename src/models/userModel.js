@@ -1,51 +1,49 @@
 import crypto from "crypto";
-import { db } from "../utils/db.js";
+import { db } from "../data/config.js";
 
 export const userModel = {
     get: async () => {
-        await db.read();
-        return db.data.users;
+        const sql = "SELECT * FROM users";
+        const [result] = await db.query(sql);
+        return result;
     },
 
     getById: async (id) => {
-        await db.read();
-        return db.data.users.find((u) => u.id === id) || null;
+        const sql = "SELECT * FROM users WHERE id = ?";
+        const [result] = await db.query(sql, [id]);
+        return result[0] || null;
     },
 
     create: async (data) => {
-        await db.read();
-        const newUser = {
-            id: crypto.randomUUID(),
-            name: data.name,
-            email: data.email,
-            date: new Date().toISOString(),
-        };
-        db.data.users.push(newUser);
-        await db.write();
-        return newUser;
+        const id = crypto.randomUUID();
+        const date = new Date().toISOString().slice(0, 23);
+        const sql = "INSERT INTO users (id, name, email, date) VALUES (?, ?, ?, ?)";
+        await db.query(sql, [id, data.name, data.email, date]);
+        return { id, ...data, date };
     },
 
     update: async (id, data) => {
-        await db.read();
-        const index = db.data.users.findIndex((u) => u.id === id);
-        if (index === -1) return null;
+        const fields = [];
+        const values = [];
+        if (data.name !== undefined) {
+            fields.push("name = ?");
+            values.push(data.name);
+        }
+        if (data.email !== undefined) {
+            fields.push("email = ?");
+            values.push(data.email);
+        }
+        if (fields.length === 0) return null;
 
-        db.data.users[index] = {
-            ...db.data.users[index],
-            ...data,
-            id,
-        };
-        await db.write();
-        return db.data.users[index];
+        values.push(id);
+        const sql = `UPDATE users SET ${fields.join(", ")} WHERE id = ?`;
+        const [result] = await db.query(sql, values);
+        return result.affectedRows > 0 ? { id, ...data } : null;
     },
 
     delete: async (id) => {
-        await db.read();
-        const index = db.data.users.findIndex((u) => u.id === id);
-        if (index === -1) return null;
-
-        const deleted = db.data.users.splice(index, 1)[0];
-        await db.write();
-        return deleted;
+        const sql = "DELETE FROM users WHERE id = ?";
+        const [result] = await db.query(sql, [id]);
+        return result.affectedRows > 0 ? { id } : null;
     },
 };

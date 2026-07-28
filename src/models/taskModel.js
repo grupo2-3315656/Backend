@@ -1,52 +1,53 @@
 import crypto from "crypto";
-import { db } from "../utils/db.js";
+import { db } from "../data/config.js";
 
 export const taskModel = {
     get: async () => {
-        await db.read();
-        return db.data.tasks;
+        const sql = "SELECT * FROM tasks";
+        const [result] = await db.query(sql);
+        return result;
     },
 
     getById: async (id) => {
-        await db.read();
-        return db.data.tasks.find((t) => t.id === id) || null;
+        const sql = "SELECT * FROM tasks WHERE id = ?";
+        const [result] = await db.query(sql, [id]);
+        return result[0] || null;
     },
 
     create: async (data) => {
-        await db.read();
-        const newTask = {
-            id: crypto.randomUUID(),
-            title: data.title,
-            description: data.description,
-            status: data.status,
-            date: new Date().toISOString(),
-        };
-        db.data.tasks.push(newTask);
-        await db.write();
-        return newTask;
+        const id = crypto.randomUUID();
+        const date = new Date().toISOString().slice(0, 23);
+        const sql = "INSERT INTO tasks (id, title, description, status, date) VALUES (?, ?, ?, ?, ?)";
+        await db.query(sql, [id, data.title, data.description, data.status, date]);
+        return { id, ...data, date };
     },
 
     update: async (id, data) => {
-        await db.read();
-        const index = db.data.tasks.findIndex((t) => t.id === id);
-        if (index === -1) return null;
+        const fields = [];
+        const values = [];
+        if (data.title !== undefined) {
+            fields.push("title = ?");
+            values.push(data.title);
+        }
+        if (data.description !== undefined) {
+            fields.push("description = ?");
+            values.push(data.description);
+        }
+        if (data.status !== undefined) {
+            fields.push("status = ?");
+            values.push(data.status);
+        }
+        if (fields.length === 0) return null;
 
-        db.data.tasks[index] = {
-            ...db.data.tasks[index],
-            ...data,
-            id,
-        };
-        await db.write();
-        return db.data.tasks[index];
+        values.push(id);
+        const sql = `UPDATE tasks SET ${fields.join(", ")} WHERE id = ?`;
+        const [result] = await db.query(sql, values);
+        return result.affectedRows > 0 ? { id, ...data } : null;
     },
 
     delete: async (id) => {
-        await db.read();
-        const index = db.data.tasks.findIndex((t) => t.id === id);
-        if (index === -1) return null;
-
-        const deleted = db.data.tasks.splice(index, 1)[0];
-        await db.write();
-        return deleted;
+        const sql = "DELETE FROM tasks WHERE id = ?";
+        const [result] = await db.query(sql, [id]);
+        return result.affectedRows > 0 ? { id } : null;
     },
 };
