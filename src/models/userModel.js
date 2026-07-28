@@ -1,3 +1,4 @@
+import crypto from "crypto";
 import { db } from "../data/config.js";
 
 export const userModel = {
@@ -8,15 +9,17 @@ export const userModel = {
     },
 
     getById: async (id) => {
-        const sql = "SELECT * FROM users WHERE id_user = ?";
+        const sql = "SELECT * FROM users WHERE id = ?";
         const [result] = await db.query(sql, [id]);
         return result[0] || null;
     },
 
     create: async (data) => {
-        const sql = "INSERT INTO users (name, email) VALUES (?, ?)";
-        const [result] = await db.query(sql, [data.name, data.email]);
-        return { id_user: result.insertId, ...data };
+        const id = crypto.randomUUID();
+        const date = new Date().toISOString().slice(0, 23);
+        const sql = "INSERT INTO users (id, name, email, date) VALUES (?, ?, ?, ?)";
+        await db.query(sql, [id, data.name, data.email, date]);
+        return { id, ...data, date };
     },
 
     update: async (id, data) => {
@@ -33,14 +36,14 @@ export const userModel = {
         if (fields.length === 0) return null;
 
         values.push(id);
-        const sql = `UPDATE users SET ${fields.join(", ")} WHERE id_user = ?`;
+        const sql = `UPDATE users SET ${fields.join(", ")} WHERE id = ?`;
         const [result] = await db.query(sql, values);
-        return result.affectedRows > 0 ? { id_user: id, ...data } : null;
+        return result.affectedRows > 0 ? { id, ...data } : null;
     },
 
     delete: async (id) => {
-        const sql = "DELETE FROM users WHERE id_user = ?";
+        const sql = "DELETE FROM users WHERE id = ?";
         const [result] = await db.query(sql, [id]);
-        return result.affectedRows > 0 ? { id_user: id } : null;
+        return result.affectedRows > 0 ? { id } : null;
     },
 };
