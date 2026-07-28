@@ -1,47 +1,43 @@
 import crypto from "crypto";
-import { db } from "../utils/db.js";
+import { db } from "../data/config.js";
 
 export const assignmentModel = {
     get: async () => {
-        await db.read();
-        return db.data.assignments;
+        const sql = "SELECT * FROM assignments";
+        const [result] = await db.query(sql);
+        return result;
     },
 
     getById: async (id) => {
-        await db.read();
-        return db.data.assignments.find((a) => a.id === id) || null;
+        const sql = "SELECT * FROM assignments WHERE id = ?";
+        const [result] = await db.query(sql, [id]);
+        return result[0] || null;
     },
 
     getByTaskId: async (taskId) => {
-        await db.read();
-        return db.data.assignments.filter((a) => a.taskId === taskId);
+        const sql = "SELECT * FROM assignments WHERE task_id = ?";
+        const [result] = await db.query(sql, [taskId]);
+        return result;
     },
 
     getByUserId: async (userId) => {
-        await db.read();
-        return db.data.assignments.filter((a) => a.userId === userId);
+        const sql = "SELECT * FROM assignments WHERE user_id = ?";
+        const [result] = await db.query(sql, [userId]);
+        return result;
     },
 
     create: async (data) => {
-        await db.read();
-        const newAssignment = {
-            id: crypto.randomUUID(),
-            taskId: data.taskId,
-            userId: data.userId,
-            assignedAt: new Date().toISOString(),
-        };
-        db.data.assignments.push(newAssignment);
-        await db.write();
-        return newAssignment;
+        const id = crypto.randomUUID();
+        const assignedAt = new Date().toISOString();
+        const sql = "INSERT INTO assignments (id, task_id, user_id, assigned_at) VALUES (?, ?, ?, ?)";
+        await db.query(sql, [id, data.taskId, data.userId, assignedAt]);
+        return { id, taskId: data.taskId, userId: data.userId, assignedAt };
     },
 
     delete: async (id) => {
-        await db.read();
-        const index = db.data.assignments.findIndex((a) => a.id === id);
-        if (index === -1) return null;
-
-        const deleted = db.data.assignments.splice(index, 1)[0];
-        await db.write();
-        return deleted;
-    },
+        const sql = "SELECT * FROM assignments WHERE id = ?";
+        const [result] = await db.query(sql, [id]);
+        if (result.length === 0) return null;
+        await db.query("DELETE FROM assignments WHERE id = ?", [id]);
+        return result[0];    },
 };
