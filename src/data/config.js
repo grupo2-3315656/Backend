@@ -1,5 +1,4 @@
 import { createPool } from "mysql2/promise";
-import "dotenv/config";
 
 export const db = createPool({
     host: "0.0.0.0",

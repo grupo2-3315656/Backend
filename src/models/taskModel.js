@@ -1,5 +1,4 @@
 import crypto from "crypto";
-import { db } from "../utils/db.js";
 
 export const taskModel = {
     get: async () => {
