@@ -25,8 +25,8 @@ CREATE TABLE IF NOT EXISTS assignments (
     taskId VARCHAR(50) NOT NULL,
     userId VARCHAR(50) NOT NULL,
     assignedAt DATETIME(3) NOT NULL,
-    FOREIGN KEY (taskId) REFERENCES tasks(id) ON DELETE CASCADE,
-    FOREIGN KEY (userId) REFERENCES users(id) ON DELETE CASCADE
+    FOREIGN KEY (taskId) REFERENCES tasks(id),
+    FOREIGN KEY (userId) REFERENCES users(id)
 );
 
 -- Insert Users data

@@ -16,7 +16,7 @@ export const taskModel = {
 
     create: async (data) => {
         const id = crypto.randomUUID();
-        const date = new Date().toISOString().slice(0, 23);
+        const date = new Date().toISOString().replace("T", " ").slice(0, 19);
         const sql = "INSERT INTO tasks (id, title, description, status, date) VALUES (?, ?, ?, ?, ?)";
         await db.query(sql, [id, data.title, data.description, data.status, date]);
         return { id, ...data, date };

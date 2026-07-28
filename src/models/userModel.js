@@ -16,7 +16,7 @@ export const userModel = {
 
     create: async (data) => {
         const id = crypto.randomUUID();
-        const date = new Date().toISOString().slice(0, 23);
+        const date = new Date().toISOString().replace("T", " ").slice(0, 19);
         const sql = "INSERT INTO users (id, name, email, date) VALUES (?, ?, ?, ?)";
         await db.query(sql, [id, data.name, data.email, date]);
         return { id, ...data, date };
