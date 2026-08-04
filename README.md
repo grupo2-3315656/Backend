@@ -39,17 +39,17 @@ mysql -u root -p < src/data/script.sql
 
 O ejecútalo manualmente desde tu cliente MySQL favorito (MySQL Workbench, phpMyAdmin, etc.).
 
-### 2. Configurar la Conexión
+### 2. Configurar Variables de Entorno
 
-Edita `src/data/config.js` con tus credenciales de MySQL:
+Crea un archivo `.env` en la raíz del proyecto:
 
-```javascript
-export const db = createPool({
-    host: "localhost",
-    user: "tu_usuario",
-    password: "tu_contraseña",
-    database: "todoTasks",
-});
+```env
+PORT=3000
+HOST=0.0.0.0
+DB_HOST=localhost
+DB_USER=root
+DB_PASSWORD=tu_contraseña
+DB_NAME=todoTasks
 ```
 
 ### 3. Instalar Dependencias

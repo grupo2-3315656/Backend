@@ -1,12 +1,15 @@
 import express from "express";
 import cors from "cors";
+import dotenv from "dotenv";
 import { router } from "./src/routes/taskRoutes.js";
 import { router as userRouter } from "./src/routes/userRoutes.js";
 import { router as assignmentRouter } from "./src/routes/assignmentRoutes.js";
 import { errorMiddelware, errorNotFoundHandler } from "./src/utils/errorHandler.js";
 
-const port = 3000;
-const host = "0.0.0.0";
+dotenv.config();
+
+const port = process.env.PORT || 3000;
+const host = process.env.HOST || "0.0.0.0";
 
 const app = express();
 
