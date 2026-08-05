@@ -28,7 +28,7 @@ export const assignmentModel = {
 
     create: async (data) => {
         const id = crypto.randomUUID();
-        const assignedAt = new Date().toISOString().replace("T", " ").slice(0, 19);
+        const assignedAt = new Date().toISOString().slice(0, 23);
         const sql = "INSERT INTO assignments (id, taskId, userId, assignedAt) VALUES (?, ?, ?, ?)";
         await db.query(sql, [id, data.taskId, data.userId, assignedAt]);
         return { id, taskId: data.taskId, userId: data.userId, assignedAt };
