@@ -3,7 +3,8 @@ CREATE DATABASE IF NOT EXISTS todoTasks;
 USE todoTasks;
 
 -- 1. Create Users table
-CREATE TABLE IF NOT EXISTS users (
+DROP TABLE IF EXISTS users;
+CREATE TABLE users (
     id VARCHAR(50) PRIMARY KEY,
     name VARCHAR(255) NOT NULL,
     email VARCHAR(255) NOT NULL,
@@ -11,7 +12,8 @@ CREATE TABLE IF NOT EXISTS users (
 );
 
 -- 2. Create Tasks table
-CREATE TABLE IF NOT EXISTS tasks (
+DROP TABLE IF EXISTS tasks;
+CREATE TABLE tasks (
     id VARCHAR(50) PRIMARY KEY,
     title VARCHAR(255) NOT NULL,
     description TEXT,
@@ -20,7 +22,8 @@ CREATE TABLE IF NOT EXISTS tasks (
 );
 
 -- 3. Create Assignments table (Junction table with Foreign Keys)
-CREATE TABLE IF NOT EXISTS assignments (
+DROP TABLE IF EXISTS assignments;
+CREATE TABLE assignments (
     id VARCHAR(50) PRIMARY KEY,
     taskId VARCHAR(50) NOT NULL,
     userId VARCHAR(50) NOT NULL,
